@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siisto - Progress</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#0b0c0e] text-white font-sans min-h-screen pb-24">
+
+    <!-- HEADER -->
+    <header class="p-6 max-w-md mx-auto">
+        <h1 class="text-2xl font-black text-white tracking-tight">Your Progress</h1>
+        <p class="text-xs text-gray-500 mt-1">Weekly targets and consistency</p>
+    </header>
+
+    <main class="p-4 max-w-md mx-auto space-y-6">
+
+        <!-- WEEKLY GOAL CHART (CIRCULAR PROGRESS) -->
+        <div class="bg-[#14161a] border border-gray-900 rounded-3xl p-6 shadow-xl flex flex-col items-center text-center space-y-4">
+            <div>
+                <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest">Weekly Consistency</h3>
+                <p class="text-[10px] text-gray-500 mt-0.5">Target: 14 Logs per week</p>
+            </div>
+
+            <!-- SVG Circular Progress Bar -->
+            <div class="relative w-36 h-36 flex items-center justify-center">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    <!-- Background Circle -->
+                    <circle cx="50" cy="50" r="40" stroke="#1f2937" stroke-width="8" fill="transparent" />
+                    <!-- Progress Circle -->
+                    <circle cx="50" cy="50" r="40" stroke="#a3e635" stroke-width="8" fill="transparent"
+                            stroke-dasharray="251.2"
+                            stroke-dashoffset="calc(251.2 - (251.2 * {{ percentage }}) / 100)"
+                            class="transition-all duration-1000 ease-out" />
+                </svg>
+                <!-- Percentage Text inside Circle -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="text-2xl font-black text-white">{{ percentage }}%</span>
+                    <span class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Done</span>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 max-w-[200px]">
+                {% if percentage >= 100 %}
+                    🎉 Masha Allah! Waad dhammaystirtay bartilmaameedkii toddobaadkan!
+                {% elif percentage > 50 %}
+                    💪 Aad u fiican! In yar ayaa kuu dhiman, horey u sii soco.
+                {% else %}
+                    🚀 Bilow wanaagsan! Joogtee si aad u gaarto 100%.
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- TOTAL ANALYTICS CARDS -->
+        <div class="grid grid-cols-2 gap-4">
+            <!-- Total Meals Card -->
+            <div class="bg-[#14161a] border border-gray-900 p-4 rounded-2xl space-y-2">
+                <div class="w-8 h-8 rounded-xl bg-lime-500/10 flex items-center justify-center text-lime-400 text-xs border border-lime-500/20">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-white">{{ total_meals }}</p>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Meals</p>
+                </div>
+            </div>
+
+            <!-- Total Workouts Card -->
+            <div class="bg-[#14161a] border border-gray-900 p-4 rounded-2xl space-y-2">
+                <div class="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 text-xs border border-blue-500/20">
+                    <i class="fa-solid fa-dumbbell"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-black text-white">{{ total_workouts }}</p>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Gyms</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#14161a]/95 backdrop-blur-md border-t border-gray-900 py-4 shadow-2xl z-50">
+        <div class="max-w-md mx-auto flex justify-around items-center text-gray-500 text-xl">
+            <a href="{% url 'home' %}" class="hover:text-white flex flex-col items-center space-y-1 transition text-gray-500">
+                <i class="fa-solid fa-house"></i>
+                <span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a href="{% url 'history' %}" class="hover:text-white flex flex-col items-center space-y-1 transition text-gray-500">
+                <i class="fa-solid fa-dumbbell"></i>
+                <span class="text-[10px] font-medium">History</span>
+            </a>
+            <a href="{% url 'progress' %}" class="text-lime-400 flex flex-col items-center space-y-1">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span class="text-[10px] font-bold">Progress</span>
+            </a>
+            <a href="{% url 'logout' %}" class="hover:text-red-400 flex flex-col items-center space-y-1 transition group">
+                <i class="fa-solid fa-right-from-bracket group-hover:text-red-400"></i>
+                <span class="text-[10px] font-medium">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

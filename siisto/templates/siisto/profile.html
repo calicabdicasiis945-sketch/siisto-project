@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siisto - Profile & Weight</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CUSUB: Maktabadda Garaafyada -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-[#0b0c0e] text-white font-sans min-h-screen pb-24">
+
+    <!-- HEADER -->
+    <header class="p-6 max-w-md mx-auto flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-black text-white tracking-tight">User Profile</h1>
+            <p class="text-xs text-gray-500 mt-1">Manage your body metrics and goals</p>
+        </div>
+    </header>
+
+    <main class="p-4 max-w-md mx-auto space-y-6">
+
+        <!-- ALERTS -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="bg-lime-500/10 border border-lime-500/30 text-lime-400 p-3 rounded-xl text-xs text-center font-medium">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- PROFILE CARD -->
+        <div class="bg-[#14161a] border border-gray-900 rounded-3xl p-6 shadow-xl space-y-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 rounded-2xl bg-gray-900 border border-gray-800 flex items-center justify-center text-2xl text-gray-400 overflow-hidden">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <i class="fa-solid fa-user"></i>
+                    {% endif %}
+                </div>
+                <div>
+                    <h2 class="text-lg font-black text-white">{{ request.user.username }}</h2>
+                    <p class="text-xs text-lime-400 font-bold">Goal: <span class="text-gray-300 font-medium">{{ profile.hadaf|default:"No goal set yet" }}</span></p>
+                </div>
+            </div>
+
+            <!-- METRICS GRID -->
+            <div class="grid grid-cols-2 gap-4 pt-2 border-t border-gray-900">
+                <div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Height</p>
+                    <p class="text-xl font-black text-gray-200">{{ profile.dherer|default:"--" }} <span class="text-xs text-gray-600">cm</span></p>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Current Weight</p>
+                    <p class="text-xl font-black text-blue-400">{{ profile.miisaan_hadda|default:"--" }} <span class="text-xs text-gray-600">kg</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUSUB: WEIGHT LINE CHART CARD -->
+        <div class="bg-[#14161a] border border-gray-900 rounded-3xl p-5 shadow-xl space-y-3">
+            <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest pl-1">Weight Progress Chart</h3>
+            <div class="w-full h-48 bg-[#0b0c0e] border border-gray-900 rounded-2xl p-2 flex items-center justify-center">
+                {% if weight_logs %}
+                    <canvas id="weightChart"></canvas>
+                {% else %}
+                    <p class="text-xs text-gray-600 italic">Add weight logs to see your chart progress.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- UPDATE PROFILE DETAILS -->
+        <form method="POST" enctype="multipart/form-data" class="bg-[#14161a] border border-gray-900 p-5 rounded-2xl space-y-3 shadow-md">
+            {% csrf_token %}
+            <div class="flex items-center space-x-2 text-xs font-bold text-gray-400 mb-1">
+                <i class="fa-solid fa-pen-to-square text-lime-400 text-xs"></i>
+                <span>Update Profile Details</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2">
+                <input type="number" step="0.1" name="dherer" value="{{ profile.dherer|default:'' }}" placeholder="Height (cm)"
+                    class="w-full bg-[#0b0c0e] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-lime-500 transition">
+                <input type="number" step="0.1" name="miisaan_hadda" value="{{ profile.miisaan_hadda|default:'' }}" placeholder="Weight (kg)"
+                    class="w-full bg-[#0b0c0e] border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-lime-500 transition">
+            </div>
+
+            <input type="text" name="hadaf" value="{{ profile.hadaf|default:'' }}" placeholder="Your Goal (e.g., Lose 5kg, Build Muscle)"
+                class="w-full bg-[#0b0c0e] border border-gray-800 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-lime-500 transition">
+            
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-gray-500 block pl-1">PROFILE PICTURE</label>
+                <input type="file" name="avatar" 
+                    class="w-full bg-[#0b0c0e] border border-gray-800 rounded-xl px-4 py-2 text-xs text-gray-400 file:mr-4 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gray-900 file:text-lime-400 hover:file:bg-gray-800">
+            </div>
+
+            <button type="submit" name="profile_submit" 
+                class="w-full bg-lime-500 hover:bg-lime-600 text-black text-xs font-black py-3 rounded-xl transition uppercase tracking-wider">
+                Save Profile
+            </button>
+        </form>
+
+        <!-- LOG NEW WEIGHT FORM -->
+        <form method="POST" class="bg-[#14161a] border border-gray-900 p-5 rounded-2xl space-y-3 shadow-md">
+            {% csrf_token %}
+            <div class="flex items-center space-x-2 text-xs font-bold text-gray-400 mb-1">
+                <i class="fa-solid fa-scale-balanced text-blue-400 text-xs"></i>
+                <span>Track Today's Weight</span>
+            </div>
+            <input type="number" step="0.1" name="miisaanka" placeholder="Enter weight in kg (e.g., 74.8)" required
+                class="w-full bg-[#0b0c0e] border border-gray-800 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
+            <button type="submit" name="weight_submit" 
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-black py-3 rounded-xl transition uppercase tracking-wider">
+                Log Weight
+            </button>
+        </form>
+
+        <!-- WEIGHT HISTORY LOGS -->
+        <div class="space-y-3">
+            <h3 class="text-xs font-black text-gray-500 uppercase tracking-widest pl-2">Weight History</h3>
+            <div class="bg-[#14161a] border border-gray-900 rounded-2xl overflow-hidden shadow-md p-2">
+                {% for log in weight_logs %}
+                <div class="flex justify-between items-center p-3 border-b border-gray-900/50 last:border-0 text-xs">
+                    <span class="text-gray-400 font-medium">{{ log.taariikhda|date:"d M Y" }}</span>
+                    <span class="font-black text-white">{{ log.miisaanka }} kg</span>
+                </div>
+                {% empty %}
+                <p class="text-xs text-gray-600 p-4 italic text-center">No weight logs yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#14161a]/95 backdrop-blur-md border-t border-gray-900 py-4 shadow-2xl z-50">
+        <div class="max-w-md mx-auto flex justify-around items-center text-gray-500 text-xl">
+            <a href="{% url 'home' %}" class="hover:text-white flex flex-col items-center space-y-1 transition text-gray-500">
+                <i class="fa-solid fa-house"></i>
+                <span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a href="{% url 'history' %}" class="hover:text-white flex flex-col items-center space-y-1 transition text-gray-500">
+                <i class="fa-solid fa-dumbbell"></i>
+                <span class="text-[10px] font-medium">History</span>
+            </a>
+            <a href="{% url 'progress' %}" class="hover:text-white flex flex-col items-center space-y-1 transition text-gray-500">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span class="text-[10px] font-medium">Progress</span>
+            </a>
+            <a href="{% url 'profile_page' %}" class="text-lime-400 flex flex-col items-center space-y-1">
+                <i class="fa-solid fa-user"></i>
+                <span class="text-[10px] font-bold">Profile</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- JAVASCRIPT FOR CHART GENERATION -->
+    <script>
+        {% if weight_logs %}
+        const ctx = document.getElementById('weightChart').getContext('2d');
+        
+        // Diyaari xogtii ka timid Django (Loo rogey habka JavaScript aqoonsan karo)
+        // Sababtoo ah xogtu waxay ku timaadaa 'Newest First', weynu rogaynaa (.reverse()) si uu garaafku bidix uga bilowdo maalin hore
+        const dates = [
+            {% for log in weight_logs %}"{{ log.taariikhda|date:'d M' }}",{% endfor %}
+        ].reverse();
+        
+        const weights = [
+            {% for log in weight_logs %}{{ log.miisaanka }},{% endfor %}
+        ].reverse();
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Weight (kg)',
+                    data: weights,
+                    borderColor: '#3b82f6', // Midabka xariiqda (Blue)
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)', // Midabka hoose ee buuxsamaya
+                    borderWidth: 3,
+                    tension: 0.3, // Garaafka inuu xoogaa waregsan qariyo (Smooth curve)
+                    pointBackgroundColor: '#3b82f6',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false } // Meesha sare ee qoraalka ka saar si uu u nadiifnaado
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#6b7280', font: { size: 9 } }
+                    },
+                    y: {
+                        grid: { color: '#1f2937' },
+                        ticks: { color: '#6b7280', font: { size: 9 } }
+                    }
+                }
+            }
+        });
+        {% endif %}
+    </script>
+
+</body>
+</html>
