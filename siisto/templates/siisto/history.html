@@ -72,8 +72,9 @@
                     <div>
                         <p class="text-sm font-bold text-gray-200">{{ jimicsi_item.magaca_jimicsiga }}</p>
                         <p class="text-[9px] text-gray-500 font-bold mt-1">
-                            <i class="fa-regular fa-clock mr-0.5"></i> {{ jimicsi_item.taariikhda|date:"d M Y - H:i" }}
-                        </p>
+                          <p class="text-[9px] text-gray-500 font-bold mt-1">
+    <i class="fa-regular fa-clock mr-0.5"></i> {{ jimicsi_item.taariikhda|date:"d M Y" }}
+</p>
                     </div>
                     <a href="{% url 'tirtir_jimicsi' jimicsi_item.id %}" class="w-8 h-8 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition">
                         <i class="fa-solid fa-trash-can text-xs"></i>
