@@ -3,52 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siisto Tracker - Sign Up</title>
+    <title>Siisto - Sign Up</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#0b0c0e] text-white font-sans min-h-screen flex flex-col justify-center items-center p-6">
+<body class="bg-[#0b0c0e] text-white font-sans min-h-screen flex flex-col justify-center p-6">
 
-    <div class="w-full max-w-md bg-[#14161a] border border-gray-900 p-8 rounded-3xl shadow-xl space-y-6">
+    <div class="w-full max-w-md mx-auto space-y-8">
+        
+        <!-- LOGO / HEADER -->
         <div class="text-center">
-            <h1 class="text-2xl font-black text-white tracking-wide">CREATE ACCOUNT</h1>
-            <p class="text-xs text-gray-500 font-medium uppercase tracking-widest mt-1">Start your 90 days journey</p>
+            <h1 class="text-4xl font-black text-lime-400 tracking-wider">SIISTO</h1>
+            <p class="text-[10px] text-gray-500 font-bold tracking-widest uppercase mt-2">Start Your Fitness Journey</p>
         </div>
 
-        {% if messages %}
-        <div class="space-y-2">
-            {% for message in messages %}
-            <div class="p-3.5 rounded-xl text-xs font-bold border bg-red-500/10 text-red-400 border-red-500/20 text-center shadow-lg">
-                {{ message }}
-            </div>
-            {% endfor %}
+        <!-- SIGNUP CARD -->
+        <div class="bg-[#14161a] border border-gray-900 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 rounded-full blur-3xl"></div>
+            
+            <h2 class="text-sm font-black text-gray-400 uppercase tracking-wider mb-6 text-center">Create New Account</h2>
+
+            <!-- ALERTS / ERRORS -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs text-center font-medium mb-4">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs text-center font-medium mb-4">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- FORM -->
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+                
+                <!-- Halkan waxaynu u qaabaynaynaa input-yada caadiga ah ee Django form-ka -->
+                {% for field in form %}
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider pl-1">
+                        {{ field.label }}
+                    </label>
+                    <div class="relative">
+                        <!-- Ku shubista input class-yada Tailwind -->
+                        {{ field }}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Haddii aad rabto inaad gacanta ku qorato input-yada halkii aad form-ka Django isticmaali lahayd, koodhka hoose ayaad isticmaali kartaa:
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider pl-1">Username</label>
+                    <input type="text" name="username" placeholder="Choose a username" required
+                        class="w-full bg-[#0b0c0e] border border-gray-800 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-lime-500 transition">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-wider pl-1">Password</label>
+                    <input type="password" name="password" placeholder="Create a password" required
+                        class="w-full bg-[#0b0c0e] border border-gray-800 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-lime-500 transition">
+                </div>
+                -->
+
+                <button type="submit" 
+                    class="w-full bg-lime-500 hover:bg-lime-600 text-black text-xs font-black py-3.5 rounded-xl transition uppercase tracking-wider mt-2 shadow-lg shadow-lime-500/10">
+                    Sign Up
+                </button>
+            </form>
         </div>
-        {% endif %}
 
-        <form method="POST" class="space-y-4">
-            {% csrf_token %}
-            <div>
-                <label class="block text-xs text-gray-400 font-semibold mb-1.5 pl-1">Username</label>
-                <input type="text" name="username" required class="w-full bg-gray-950 border border-gray-900 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-lime-500 transition" placeholder="Choose a username">
-            </div>
-            <div>
-                <label class="block text-xs text-gray-400 font-semibold mb-1.5 pl-1">Password</label>
-                <input type="password" name="password" required class="w-full bg-gray-950 border border-gray-900 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-lime-500 transition" placeholder="Create a password">
-            </div>
-            <div>
-                <label class="block text-xs text-gray-400 font-semibold mb-1.5 pl-1">Confirm Password</label>
-                <input type="password" name="confirm_password" required class="w-full bg-gray-950 border border-gray-900 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-lime-500 transition" placeholder="Repeat your password">
-            </div>
-
-            <button type="submit" class="w-full bg-lime-500 hover:bg-lime-600 text-black font-black py-3 rounded-xl transition duration-200 text-sm mt-2 shadow-lg shadow-lime-500/10">
-                SIGN UP
-            </button>
-        </form>
-
-        <p class="text-xs text-gray-500 text-center">
-            Already have an account? <a href="{% url 'login' %}" class="text-lime-400 hover:underline font-bold">Log In</a>
+        <!-- FOOTER LINK -->
+        <p class="text-center text-xs text-gray-500 font-medium">
+            Already have an account? 
+            <a href="{% url 'login' %}" class="text-lime-400 font-black hover:underline ml-1">Log In</a>
         </p>
+
     </div>
+
+    <!-- SCRIPT SI INPUT-YADA DJANGO LOO QURXIYO -->
+    <script>
+        // Tani waxay si toos ah u qurxinaysaa input-yada uu Django soo saaro si ay ula jaan-qaadaan Tailwind
+        document.querySelectorAll('input').forEach(input => {
+            if (input.type !== 'submit' && input.type !== 'hidden') {
+                input.className = "w-full bg-[#0b0c0e] border border-gray-800 rounded-xl px-4 py-3 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-lime-500 transition";
+            }
+        });
+    </script>
 
 </body>
 </html>
