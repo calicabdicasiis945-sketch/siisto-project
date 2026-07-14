@@ -9,7 +9,6 @@
 </head>
 <body class="bg-[#0b0c0e] text-white font-sans min-h-screen pb-24">
 
-    <!-- HEADER -->
     <header class="p-6 max-w-md mx-auto flex justify-between items-center">
         <div>
             <h1 class="text-2xl font-black text-white tracking-tight">HISTORY</h1>
@@ -22,7 +21,6 @@
 
     <main class="p-4 max-w-md mx-auto space-y-6">
 
-        <!-- ALERTS (Fariimaha tirtirista) -->
         {% if messages %}
             {% for message in messages %}
             <div class="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs text-center font-medium">
@@ -31,7 +29,6 @@
             {% endfor %}
         {% endif %}
 
-        <!-- MEAL HISTORY -->
         <div class="space-y-3">
             <h2 class="text-xs font-black text-gray-500 uppercase tracking-widest pl-1">
                 <i class="fa-solid fa-plate-wheat text-lime-400 mr-1"></i> Meal Logs
@@ -61,7 +58,6 @@
             </div>
         </div>
 
-        <!-- WORKOUT HISTORY -->
         <div class="space-y-3">
             <h2 class="text-xs font-black text-gray-500 uppercase tracking-widest pl-1">
                 <i class="fa-solid fa-dumbbell text-blue-400 mr-1"></i> Workout Logs
@@ -72,9 +68,8 @@
                     <div>
                         <p class="text-sm font-bold text-gray-200">{{ jimicsi_item.magaca_jimicsiga }}</p>
                         <p class="text-[9px] text-gray-500 font-bold mt-1">
-                          <p class="text-[9px] text-gray-500 font-bold mt-1">
-    <i class="fa-regular fa-clock mr-0.5"></i> {{ jimicsi_item.taariikhda|date:"d M Y" }}
-</p>
+                            <i class="fa-regular fa-clock mr-0.5"></i> {{ jimicsi_item.taariikhda|date:"d M Y" }}
+                        </p>
                     </div>
                     <a href="{% url 'tirtir_jimicsi' jimicsi_item.id %}" class="w-8 h-8 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition">
                         <i class="fa-solid fa-trash-can text-xs"></i>
@@ -90,25 +85,20 @@
 
     </main>
 
-    <!-- BOTTOM NAVIGATION BAR (HISTORY IS GREEN) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-[#14161a]/95 backdrop-blur-md border-t border-gray-900 py-4 shadow-2xl z-50">
         <div class="max-w-md mx-auto flex justify-around items-center text-gray-500 text-xl">
-            <!-- Home (Hadda waa Cawl) -->
             <a href="{% url 'home' %}" class="hover:text-white flex flex-col items-center space-y-1 transition text-gray-500">
                 <i class="fa-solid fa-house"></i>
                 <span class="text-[10px] font-medium">Home</span>
             </a>
-            <!-- History (Hadda waa Cagaar!) -->
             <a href="{% url 'history' %}" class="text-lime-400 flex flex-col items-center space-y-1">
                 <i class="fa-solid fa-dumbbell"></i>
                 <span class="text-[10px] font-bold">History</span>
             </a>
-            <!-- Progress -->
             <a href="{% url 'progress' %}" class="hover:text-white flex flex-col items-center space-y-1 transition text-gray-500">
                 <i class="fa-solid fa-chart-simple"></i>
                 <span class="text-[10px] font-medium">Progress</span>
             </a>
-            <!-- Profile -->
             <a href="{% url 'profile_page' %}" class="hover:text-white flex flex-col items-center space-y-1 transition text-gray-500">
                 <i class="fa-solid fa-user"></i>
                 <span class="text-[10px] font-medium">Profile</span>
